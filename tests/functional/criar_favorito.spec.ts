@@ -1,14 +1,31 @@
 import { test } from '@japa/runner'
 
 test.group('Criar favorito', () => {
-  test('criar favorito', async ({client})=>{
-    const resposta=await client.post('/favoritos').json(
-      {nome: 'IFRN',
-      url:'wwww.ifrn.edu.br',
-      importante:false
-      })
+  test('criar favorito', async ({ client }) => {
+    const resposta = await client.post('/favoritos').json({
+      nome: 'IFRN',
+      url: 'www.ifrn.edu.br',
+      importante: false
+    })
+
     resposta.assertStatus(201)
-    resposta.assertBodyContains({nome:"IFRN"})
+    resposta.assertBodyContains({ nome: 'IFRN' })
   })
-  test('criarmfavorito com campo faltante')
+
+  test('criar favorito com campo faltante', async ({ client }) => {
+    const resposta = await client.post('/favoritos').json({
+      nome: 'IFRN',
+      // O campo 'url' está faltando
+      importante: false
+    })
+
+    resposta.assertStatus(400)
+
+    const responseBody = resposta.text()
+
+    // Substitua a verificação abaixo conforme necessário
+    if (!responseBody.includes('O campo "url" é obrigatório.')) {
+      
+    }
+  })
 })
