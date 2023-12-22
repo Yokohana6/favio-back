@@ -1,5 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Favorito from 'App/Models/Favorito'
+import { DateTime } from 'luxon'
 
 
 export default class FavoritosController {
@@ -34,17 +35,17 @@ export default class FavoritosController {
   favoritoEncontrado.importante=importante
 
  await favoritoEncontrado.save()
-  await favoritoEncontrado.merge({updatedAt:DateTime.local()}).save
+ await favoritoEncontrado.merge({updatedAt:DateTime.local()}).save()
   return response.status(200).send(favoritoEncontrado)
 
   }
 
   public async destroy({params, response}: HttpContextContract) {
-    let favoritoEncontrado=favoritos.find((favorito)=>favorito.id==params.id)
+    let favoritoEncontrado=await Favorito.findByOrFail('id', params.id)
     if(!favoritoEncontrado)
     return response.status(404)
 
-    favoritos.splice(favoritos.indexOf(favoritoEncontrado),1)
+    favoritoEncontrado.delete()
     return response.status(204)
 
   }
